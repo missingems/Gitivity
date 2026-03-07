@@ -22,7 +22,7 @@ final class GitHubService: GitHubServiceProtocol {
     let endpoint = GitHubEndpoint.contributionCalendar(username: username)
     let response: GithubGraphQLResponse = try await provider.request(endpoint)
     
-    let allDays = response.data.user.contributionsCollection
+    let allDays = response.payload.viewer.contributionsCollection
       .calendar
       .weeks
       .flatMap {
@@ -33,7 +33,7 @@ final class GitHubService: GitHubServiceProtocol {
     let padding = (5 - lastFive.count)
     
     let paddedDays = (0..<max(0, padding)).map { _ in
-      ContributionsCollection.Calendar.Day(count: 0)
+      ContributionsCollection.Calendar.Day(count: 0, date: "")
     }
     
     return paddedDays + lastFive

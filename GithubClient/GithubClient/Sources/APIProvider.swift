@@ -7,10 +7,8 @@
 
 import Foundation
 
-enum APIError: Error {
-  case networkError(_ error: Error)
-  case invalidRequest
-  case invalidResponse
+enum APIError: Error, Equatable {
+  case networkError
   case httpError(_ statusCode: Int)
   case decodingError
 }
@@ -30,14 +28,10 @@ final class APIProvider {
     self.authHeaderProvider = authHeaderProvider
   }
   
-  func request<T: Decodable>(_ endpoint: TargetType, as type: T.Type = T.self) async throws(APIError) -> T {
+  func request<T: Decodable>(_ endpoint: TargetType, as type: T.Type = T.self) async throws -> T {
     var request: URLRequest
     
-    do {
-      request = try endpoint.asURLRequest()
-    } catch {
-      throw .invalidRequest
-    }
+    request = try endpoint.asURLRequest()
     
     authHeaderProvider?(endpoint)
       .forEach {
@@ -49,21 +43,22 @@ final class APIProvider {
     do {
       (data, response) = try await session.data(for: request)
     } catch {
-      throw .networkError(error)
+      throw APIError.networkError
     }
     
-    guard let http = response as? HTTPURLResponse else {
-      throw .invalidResponse
+    let statusCode = (response as? HTTPURLResponse)?.statusCode
+    let valid = statusCode.map { value in
+      return value >= 200 && value < 300
     }
     
-    guard (200..<300).contains(http.statusCode) else {
-      throw .httpError(http.statusCode)
+    if valid == false {
+      throw APIError.httpError(statusCode ?? -1)
     }
     
     do {
       return try decoder.decode(T.self, from: data)
     } catch {
-      throw .decodingError
+      throw APIError.decodingError
     }
   }
 }

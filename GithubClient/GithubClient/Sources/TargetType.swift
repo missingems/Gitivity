@@ -32,17 +32,10 @@ extension TargetType {
     request.httpMethod = method.rawValue
     headers.forEach { request.addValue($1, forHTTPHeaderField: $0) }
     
-    if case .jsonBody(let body) = task {
-      request.httpBody = try JSONSerialization.data(withJSONObject: body)
-      
-      if request.value(forHTTPHeaderField: "Content-Type") == nil {
-        request.addValue(
-          "application/json",
-          forHTTPHeaderField: "Content-Type"
-        )
-      }
+    if case let .jsonBody(body) = task {
+      request.httpBody = try JSONEncoder().encode(body)
+      request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     }
-    
     return request
   }
 }

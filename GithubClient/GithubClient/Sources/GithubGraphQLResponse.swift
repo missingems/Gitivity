@@ -6,9 +6,17 @@
 //
 
 struct GithubGraphQLResponse: Decodable {
-  let data: Data
+  let payload: Data
+  
+  enum CodingKeys: String, CodingKey {
+    case payload = "data"
+  }
   
   struct Data: Decodable {
-    let user: GitHubUser
+    let viewer: GitHubUser
+    
+    enum CodingKeys: String, CodingKey {
+      case viewer
+    }
   }
 }
