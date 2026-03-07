@@ -22,5 +22,17 @@ let project = Project(
       sources: ["GithubClient/Tests/**"],
       dependencies: [.target(name: "GithubClient")]
     ),
+  ],
+  schemes: [
+    .scheme(
+      name: "GithubClient",
+      testAction: .targets(
+        ["GithubClientTests"],
+        options: .options(
+          coverage: true,
+          codeCoverageTargets: ["GithubClient"]
+        )
+      )
+    )
   ]
 )
