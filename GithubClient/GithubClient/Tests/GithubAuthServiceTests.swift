@@ -110,15 +110,17 @@ struct GitHubAuthServiceTests {
   
   @Test func storedToken_returnsToken_afterLogin() async throws {
     let (service, _) = makeService()
-    try await service.login(presentationAnchor: .init())
+    let token = try await service.login(presentationAnchor: .init())
     #expect(service.storedToken() == "token_xyz")
+    #expect(token == "token_xyz")
   }
   
   @Test func logout_clearsToken() async throws {
     let (service, tokenStore) = makeService()
-    try await service.login(presentationAnchor: .init())
+    let token = try await service.login(presentationAnchor: .init())
     try service.logout()
     #expect(tokenStore.storage == nil)
     #expect(service.storedToken() == nil)
+    #expect(token == "token_xyz")
   }
 }
