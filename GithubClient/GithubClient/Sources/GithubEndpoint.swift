@@ -43,7 +43,7 @@ extension GitHubEndpoint: TargetType {
     }
   }
   
-  var task: Task {
+  var task: TargetTask {
     return switch self {
     case let .contributionCalendar(username):
         .jsonBody(

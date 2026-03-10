@@ -12,7 +12,7 @@ enum HTTPMethod: String {
   case post = "POST"
 }
 
-enum Task {
+enum TargetTask {
   case plain
   case jsonBody(Encodable)
 }
@@ -22,7 +22,7 @@ protocol TargetType {
   var path: String { get }
   var method: HTTPMethod { get }
   var headers: [String: String] { get }
-  var task: Task { get }
+  var task: TargetTask { get }
 }
 
 extension TargetType {

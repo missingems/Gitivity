@@ -5,17 +5,17 @@
 //  Created by Jun on 7/3/26.
 //
 
-struct ContributionsCollection: Decodable {
+public struct ContributionsCollection: Decodable {
   let calendar: Calendar
   
   enum CodingKeys: String, CodingKey {
     case calendar = "contributionCalendar"
   }
   
-  struct Calendar: Decodable {
+  public struct Calendar: Decodable {
     let weeks: [Week]
     
-    struct Week: Decodable {
+    public struct Week: Decodable {
       let days: [Day]
       
       enum CodingKeys: String, CodingKey {
@@ -23,7 +23,7 @@ struct ContributionsCollection: Decodable {
       }
     }
     
-    struct Day: Decodable {
+    public struct Day: Decodable {
       let count: Int
       let date: String
       
